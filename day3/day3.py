@@ -1,10 +1,10 @@
-def adj_symbol(i,j,scheme):
+def adj_symbol(row,col,scheme):
     offsets = [(0,-1),[0,1],[1,0],[-1,0],[-1,-1],[1,1],[-1,1],[1,-1]]
     for a,b in offsets:
-        adj_idx = [i+a,j+b]
+        adj_idx = [row+a,col+b]
         if adj_idx[0]>139 or adj_idx[0]<0 or adj_idx[1]>139 or adj_idx[1]<0:
             continue
-        adj_char = scheme[adj_idx[0],adj_idx[1]] 
+        adj_char = scheme[adj_idx[0]][adj_idx[1]] 
         if not adj_char.isnumeric() and adj_char != '.':
             return True
     return False
@@ -25,25 +25,28 @@ def pt1(input_file):
             schematic[i][j] = c
             j += 1
         i += 1
-
-    for line in schematic:
+        
+    part_num_total = 0
+    for row, line in enumerate(schematic):
         stack = []
-        part_num_total = 0
-        for i,c in enumerate(line):
+        eol = False
+        for col,c in enumerate(line):
+            eol = (col == m-1)
             if c.isnumeric():
-                stack.append([c,i])
-            elif stack:
+                stack.append([c,col])
+            if stack and (not c.isnumeric() or eol):
                 valid_part_num = False
                 for node in stack:
-                    if adj_symbol(i,node[1],schematic):
+                    if adj_symbol(row,node[1],schematic):
                         valid_part_num = True
                         break
-
+            
                 if valid_part_num:
-                    part_num = "".join([row[1] for row in stack])
-                    part_num_total += part_num 
-
-
-        print(stack)
+                    part_num = "".join([str(node[0]) for node in stack])
+                    part_num_total += int(part_num) 
+                stack = []
+        #print(stack)
+    print(part_num_total)
+    
 
 pt1('input.txt')
