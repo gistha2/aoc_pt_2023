@@ -4,7 +4,7 @@ def create_map_function(ranges):
         x = int(x)
         for r in ranges:
             if x>=r[1] and x<=r[1]+r[2]:
-                return r[0]+(x-r[1])
+                return x+(r[0]-r[1])
         return x 
      return _
 
@@ -25,6 +25,10 @@ def process_almanac(input_file):
         else: 
             temp_ranges.append(line.split())
             temp_ranges[-1] = [ int(x) for x in temp_ranges[-1] ]
+    
+    #check for last line
+    if temp_ranges:
+        map_list.append(create_map_function(temp_ranges))        
 
     location_nums = []
     for seed_num in seed_nos:
@@ -32,8 +36,7 @@ def process_almanac(input_file):
         for map in map_list:
             new_num = map(new_num)
         location_nums.append(new_num)
-    print(location_nums)
     return min(location_nums)
 
-input_file = 'test.txt'
+input_file = 'input.txt'
 print(process_almanac(input_file))
